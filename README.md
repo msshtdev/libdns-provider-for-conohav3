@@ -25,7 +25,7 @@ p := conohav3.Provider{
     APITenantID: "apiTenantID",
     APIUserID: "apiUserID",
     APIPassword: "apiPassword",
-    Region: "region", // optional default value is "c3j1"
+    Region: "region", // Optional. If omitted, defaults to "c3j1".
 }
 zone := `example.localhost`
 
