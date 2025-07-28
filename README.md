@@ -1,29 +1,42 @@
-DEVELOPER INSTRUCTIONS:
-=======================
+# ConoHa VPS Ver 3.0 for `libdns`
 
-This repo is a template for developers to use when creating new [libdns](https://github.com/libdns/libdns) provider implementations.
+This package implements the [libdns interface](https://github.com/libdns/libdns) for [ConoHa VPS Ver.3.0](https://doc.conoha.jp/products/vps-v3/) using [ConoHa VPS Ver.3.0 Public APIs](https://doc.conoha.jp/reference/api-vps3/).
 
-Be sure to update:
+## Authenticating
 
-- The package name
-- The Go module name in go.mod
-- The latest `libdns/libdns` version in go.mod
-- All comments and documentation, including README below and godocs
-- License (must be compatible with Apache/MIT)
-- All "TODO:"s is in the code
-- All methods that currently do nothing
+The `conohav3` package authenticates using the credentials required by ConoHa's Identity API.
 
-**Please be sure to conform to the semantics described at the [libdns godoc](https://github.com/libdns/libdns).**
+You must provide the following variables:
 
-_Remove this section from the readme before publishing._
+- **APITenantID**: Your ConoHa **Tenant ID** . This identifies your account's tenant.
+- **APIUserID**: Your **User ID** associated with the API credentials.
+- **APIPassword**: The **User Password** for the user.
+- **Region** *(optional)*: The ConoHa service region. If omitted, defaults to `"c3j1"`.
 
----
+These credentials are used to obtain a token from the Identity service, which is then used to authorize DNS API requests.
 
-\<PROVIDER NAME\> for [`libdns`](https://github.com/libdns/libdns)
-=======================
+See [Identity APIs](https://doc.conoha.jp/reference/api-vps3/api-identity-vps3/identity-post_tokens-v3/) for more details.
 
-[![Go Reference](https://pkg.go.dev/badge/test.svg)](https://pkg.go.dev/github.com/libdns/TODO:PROVIDER_NAME)
 
-This package implements the [libdns interfaces](https://github.com/libdns/libdns) for \<PROVIDER\>, allowing you to manage DNS records.
+## Example Configuration
 
-TODO: Show how to configure and use. Explain any caveats.
+```go
+p := conohav3.Provider{
+    APITenantID: "apiTenantID",
+    APIUserID: "apiUserID",
+    APIPassword: "apiPassword",
+    Region: "region", // Optional. If omitted, defaults to "c3j1".
+}
+zone := `example.localhost`
+
+// List existing records
+fmt.Printf("List existing records\n")
+currentRecords, err := conohav3.GetRecords(context.TODO(), zone)
+if err != nil {
+    fmt.Printf("%v\n", err)
+	return
+}
+for _, record := range currentRecords {
+	fmt.Printf("Exists: %v\n", record)
+}
+```
