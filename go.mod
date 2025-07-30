@@ -1,4 +1,4 @@
-module github.com/msshtdev/conohav3
+module github.com/libdns/conoha
 
 go 1.18
 
